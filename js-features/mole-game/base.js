@@ -1,3 +1,5 @@
+let interval = 800;
+
 (() => {
   let playing = true,
     activeHole = 1;
@@ -16,7 +18,9 @@
       activeHole = Math.floor( 1 + Math.random() * 9 );
       activateHole( activeHole );
       next();
-    }, 800 );
+    }, interval );
 
   next();
 })();
+
+
