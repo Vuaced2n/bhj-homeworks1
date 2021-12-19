@@ -7,3 +7,23 @@
 }
 
 
+.rotator__case[data-color="green"] {
+  color: green;
+}
+
+.rotator__case[data-color="#000"] {
+  color: #000;
+}
+
+.rotator__case[data-color="red"] {
+  color: red;
+}
+
+.rotator__case[data-color="blue"] {
+  color: blue;
+}
+
+.rotator__case[data-color="gray"] {
+  color: gray;
+}
+
