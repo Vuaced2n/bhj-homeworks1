@@ -17,7 +17,6 @@ class Rotator {
       this.rotateItems[this.counter].classList.add('rotator__case_active');
       this.interval = this.rotateItems[this.counter].dataset.speed;
       this.rotate();
-      console.log(this.interval);
 
     }, this.interval);
   }
