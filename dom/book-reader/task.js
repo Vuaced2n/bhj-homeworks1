@@ -6,7 +6,6 @@ class BookReader {
     this.fontSizeControl = container.querySelector('.book__control_font-size');
     this.colorControl = container.querySelector('.book__control_color');
     this.backgroundControl = container.querySelector('.book__control_background');
-    this.bookContent = container.querySelector('.book__content');
 
     this.registerEvent();
   }
@@ -20,20 +19,34 @@ class BookReader {
   fontsSelect(event) {
     event.preventDefault();
     const dataSizeValue = event.target.dataset.size;
-    this.clearClassFontSize();
+
+    //Убираем класс active у элементов выбора размера текста
+    this.clearClass(this.fontSizeControl, 'font-size_active');
+
+    //Проверяем доп классы у book
+    this.container.classList.toggle('book_fs-small', false);
+    this.container.classList.toggle('book_fs-big', false);
+
     if (dataSizeValue === 'small') {
       this.container.classList.add('book_fs-small');
+      event.target.classList.add('font-size_active');
     } else if (dataSizeValue === 'big') {
       this.container.classList.add('book_fs-big');
+      event.target.classList.add('font-size_active');
     }
   }
 
   colorSelect(event) {
     event.preventDefault();
-    // console.log('color', event.target.dataset.textColor);
-    
+
     const colorData = event.target.dataset.textColor;
-    this.clearClass(this.colorControl);
+
+    this.clearClass(this.colorControl, 'color_active');
+
+    this.container.classList.toggle('book_color-black', false);
+    this.container.classList.toggle('book_color-gray', false);
+    this.container.classList.toggle('book_color-whitesmoke', false);
+
     if (colorData === 'black') {
       this.container.classList.add('book_color-black');
       event.target.classList.add('color_active');
@@ -48,18 +61,32 @@ class BookReader {
 
   backgroundSelect(event) {
     event.preventDefault();
-    console.log('bg', event.target.dataset.bgColor);
+    const bgData = event.target.dataset.bgColor;
+
+    this.clearClass(this.backgroundControl, 'color_active');
+
+    this.container.classList.toggle('book_bg-black', false);
+    this.container.classList.toggle('book_bg-gray', false);
+    this.container.classList.toggle('book_bg-white', false);
+
+    if (bgData === 'black') {
+      this.container.classList.add('book_bg-black');
+      event.target.classList.add('color_active');
+    } else if (bgData === 'gray') {
+      this.container.classList.add('book_bg-gray');
+      event.target.classList.add('color_active');
+    } else if (bgData === 'white') {
+      this.container.classList.add('book_bg-white');
+      event.target.classList.add('color_active');
+    }
+
   }
 
-  clearClassFontSize() {
-    this.container.classList.toggle('book_fs-small', false);
-    this.container.classList.toggle('book_fs-big', false);
-  }
-  
-  clearClass(data) {
-    data.querySelectorAll('a').forEach(item => {
-      item.classList.remove('color_active');
-    });
+  clearClass(module, className) {
+    module.querySelectorAll('a')
+      .forEach(element => {
+        element.classList.remove(`${className}`);
+      });
   }
 }
 
