@@ -39,9 +39,7 @@ class Chat {
     this.container.addEventListener('dblclick', () => {
       this.container.classList.remove('chat-widget_active');
       clearInterval(this.timerId);
-      console.log(this.timerId);
     });
-
   }
 
   randomMessage() {
@@ -49,11 +47,10 @@ class Chat {
   }
 
   validateMessage() {
-    if (this.inputField.value.length !== 0) {
-      this.sendMessage('message_client', this.inputField.value);
+    const inputMessage = this.inputField.value.trim();
+    if (inputMessage.length !== 0) {
+      this.sendMessage('message_client', inputMessage);
       setTimeout(() => this.sendBotMessage(), 500);
-    } else {
-      console.warn('Пустое сообщение');
     }
   }
 
@@ -89,25 +86,20 @@ class Chat {
     this.inputField.value = '';
 
     //Автоскролл
-    this.messegesField.parentElement.scrollTop = this.messegesField.parentElement.scrollHeight - this.messegesField.parentElement.clientHeight;
+    const chatContainer = this.messegesField.parentElement;
+    chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
 
     clearInterval(this.timerId);
-    console.log('clear ', this.timerId);
     if (this.container.classList.contains('chat-widget_active')) {
       this.waitingResponse();
     }
   }
 
   waitingResponse() {
-
     this.timerId = setInterval(() => {
-        this.sendBotMessage();
-
-      },
-      10000);
-    console.log('Set timer ', this.timerId);
+      this.sendBotMessage();
+    }, 30000);
   }
-
 }
 
 new Chat(document.querySelector('.chat-widget'));
