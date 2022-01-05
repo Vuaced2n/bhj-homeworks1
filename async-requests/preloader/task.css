@@ -1,21 +1,29 @@
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  text-align: center;
+  box-shadow: 0 0 8px 0 rgba(34, 60, 80, 0.2);
 }
 .item {
   display: flex;
+  justify-content: center;
 }
 
 .item__code {
-  margin-right: 5px;
+  width: 38px;
   font-weight: bold;
 }
 .item__value {
-  margin-right: 5px;
+  margin: 0 5px;
+  min-width: 75px;
 }
 
 .loader {
   width: 100px;
   display: none;
+  margin: 0 auto;
 }
 .loader_active {
   display: block;
