@@ -17,7 +17,7 @@ function checkSaveLocalstorage() {
   const saveData = JSON.parse(localStorage.getItem('tasks'));
   if (saveData !== null && saveData.list.length > 0) {
     saveData.list.forEach(elem => {
-      taskList.insertAdjacentHTML('beforeEnd', elem);
+      taskList.append(createTaskElement(elem));
     });
   } else {
     localStorage.setItem('tasks', JSON.stringify({list: []}));
@@ -45,19 +45,26 @@ function validateInput(event) {
  * @param inputValue - валидированное значение поля input
  */
 function addTask(inputValue) {
-
-  let task = `<div class="task">
-                <div class="task__title">
-                  ${inputValue}
-                </div>
-                <a href="#" class="task__remove">&times</a>
-              </div>`;
-
-  taskList.insertAdjacentHTML('beforeEnd', task);
+  taskList.append(createTaskElement(inputValue))
   taskInput.value = '';
-  addLocalStorage(task);
+  addLocalStorage(inputValue);
 }
 
+
+/**
+ * Создает элемент списка
+ * @param taskValue - Текст задачи из input
+ * @returns {HTMLDivElement}
+ */
+function createTaskElement (taskValue) {
+  let element = document.createElement('div');
+  element.classList = 'task';
+  element.innerHTML = `
+          <div class="task__title">${taskValue}</div>
+          <a href="#" class="task__remove">&times</a>
+     `;
+  return element;
+}
 
 /**
  * Удаление задачи из списка

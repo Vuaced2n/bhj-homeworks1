@@ -17,12 +17,26 @@ function createTooltip(text, position) {
 /**
  * Удаляет активную подсказку
  */
-function deleteTooltip() {
-  const allActiveTooltip = document.querySelector('.tooltip_active');
-  if (allActiveTooltip === null) return;
-  allActiveTooltip.remove();
-}
+let oldElem = null;
 
+function deleteTooltip(elem) {
+
+  const activeTooltip = document.querySelector('.tooltip_active');
+
+  if (activeTooltip === null) {
+    oldElem = elem;
+    return true;
+  }
+
+  if (oldElem === elem) {
+    activeTooltip.remove();
+    return false;
+  }
+
+  oldElem = elem;
+  activeTooltip.remove();
+  return true;
+}
 
 
 const tooltips = document.getElementsByClassName('has-tooltip');
@@ -36,9 +50,9 @@ function showTooltip(event) {
   event.preventDefault();
   const messageTooltip = this.getAttribute('title');
   const coordinates = this.getBoundingClientRect()
+  const tooltipPosition = this.dataset.position;
 
-  // Тут можно поменять позицию подсказки
-  let newTooltip = createTooltip(messageTooltip, 'bottom');
+  let newTooltip = createTooltip(messageTooltip, tooltipPosition);
 
   if (newTooltip.dataset.position === 'bottom') {
     newTooltip.style.left = coordinates.left + 'px';
@@ -60,7 +74,8 @@ function showTooltip(event) {
     newTooltip.style.bottom = positionY + 'px';
   }
 
-  deleteTooltip();
-  this.insertAdjacentElement('afterEnd', newTooltip);
+  if (deleteTooltip(this)) {
+    this.insertAdjacentElement('afterEnd', newTooltip);
+  }
 }
 

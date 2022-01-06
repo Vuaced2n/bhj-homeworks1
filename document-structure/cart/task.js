@@ -3,12 +3,16 @@
 const allProducts = document.querySelectorAll('.product');
 const cart = document.querySelector('.cart__products');
 const cartWrapper = document.querySelector('.cart');
-let productInCart = [];
+let productInCart = [];  //id продуктов в корзине
+
 
 allProducts.forEach(elem => {
   elem.addEventListener('click', cardHandler);
 });
 cartWrapper.addEventListener('click', removeCartProduct);
+
+
+checkDataLocalstorage();
 
 
 /**
@@ -39,13 +43,34 @@ function cardHandler(event) {
  */
 function createCardProduct(element) {
   const id = element.dataset.id;
-  const images = element.querySelector('.product__image');
-  const count = element.querySelector('.product__quantity-value');
-  let product = document.createElement('div');
-  const countElement = `<div class="cart__product-count">${count.innerText}</div>`;
+  const imagesUrl = element.querySelector('.product__image').getAttribute('src');
+  const count = element.querySelector('.product__quantity-value').innerText;
+  productInCart.push(id);
+  if (cartWrapper.matches('.cart__hidden')) cartWrapper.classList.remove('cart__hidden');
+  return createCartElement(id, imagesUrl, count);
+}
+
+
+/**
+ * Создаем элемент товара в корзине
+ * @param id - id товара
+ * @param count - Значение товара в корзине
+ * @param imagesUrl - Сыылка на изображение товара
+ * @returns {HTMLDivElement}
+ */
+function createCartElement(id, imagesUrl, count) {
+
+  let cartElement = document.createElement('div');
+  cartElement.classList.add('cart__product');
+  cartElement.dataset.id = id;
+
+  let img = document.createElement('img')
+  img.classList.add('cart__product-image')
+  img.setAttribute('src', imagesUrl)
+
+  const countElement = `<div class="cart__product-count">${count}</div>`;
   const removeButton = `
             <div class="cart__product-remove">
-<!--              <img src="https://img.icons8.com/flat-round/32/000000/delete-sign.png"/>-->
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" version="1.1" viewBox="0 0 32 32">
                <g transform="scale(2)">
                 <circle style="fill:#f44336" cx="8" cy="8" r="7"/>
@@ -54,16 +79,12 @@ function createCardProduct(element) {
                </g>
               </svg>
             </div>`;
-  product.classList.add('cart__product');
-  product.dataset.id = id;
-  product.prepend(images.cloneNode(false));
-  product.insertAdjacentHTML('beforeEnd', countElement);
-  product.insertAdjacentHTML("beforeEnd", removeButton);
-  productInCart.push(id);
-  if(cartWrapper.matches('.cart__hidden')) cartWrapper.classList.remove('cart__hidden');
-  return product;
-}
 
+  cartElement.prepend(img);
+  cartElement.insertAdjacentHTML('beforeEnd', countElement);
+  cartElement.insertAdjacentHTML("beforeEnd", removeButton);
+  return cartElement;
+}
 
 /**
  * Проверка наличия в корзине
@@ -81,6 +102,7 @@ function checkProductCart(element) {
   } else {
     cart.append(createCardProduct(element));
   }
+  getCart();
 }
 
 
@@ -88,15 +110,62 @@ function checkProductCart(element) {
  * Удаление карточки из корзины
  * @param event
  */
-function removeCartProduct (event) {
+function removeCartProduct(event) {
   const removeProduct = event.target.closest('div.cart__product');
   const clickElement = event.target.closest('div.cart__product-remove')
-  console.log(event.target)
-  if(clickElement.matches('.cart__product-remove')) {
+  if (clickElement !== null && clickElement.matches('.cart__product-remove')) {
     removeProduct.remove();
     productInCart = productInCart.filter(elem => {
       return elem !== removeProduct.dataset.id;
     });
   }
   if (productInCart.length === 0) cartWrapper.classList.add('cart__hidden');
+  getCart()
+}
+
+
+/**
+ * Проверка наличия данных в localStorage и воостановление
+ */
+function checkDataLocalstorage() {
+  const data = JSON.parse(localStorage.getItem('cartsProduct'))
+  if (data !== null && data.products.length > 0) {
+    data.products.forEach(elem => {
+      const {id, images, count} = elem;
+      productInCart.push(id);
+      cart.append(createCartElement(id, images, count));
+    });
+    if (cartWrapper.matches('.cart__hidden')) {
+      cartWrapper.classList.remove('cart__hidden');
+    }
+  } else {
+    localStorage.setItem('cartsProduct', JSON.stringify({products: []}));
+  }
+}
+
+
+/**
+ * Добавляет список дааные актуальных элементов в localStorage
+ * @param cardsList - Массив данных
+ */
+function addDataLocalstorage(cardsList) {
+  let data = JSON.parse(localStorage.getItem('cartsProduct'));
+  data.products.length = 0;
+  data.products = cardsList;
+  localStorage.setItem('cartsProduct', JSON.stringify(data));
+}
+
+
+/**
+ * Получение актуальных элементов в корзине
+ */
+function getCart() {
+  const cartItems = document.querySelectorAll('.cart__product')
+  let cardsList = []
+  Array.from(cartItems).forEach(elem => {
+    const imagesUrl = elem.querySelector('img').getAttribute('src');
+    const count = elem.querySelector('.cart__product-count').textContent;
+    cardsList.push({id: elem.dataset.id, images: imagesUrl, count: count});
+  })
+  addDataLocalstorage(cardsList);
 }
