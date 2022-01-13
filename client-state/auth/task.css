@@ -45,3 +45,9 @@
   display: block;
   text-align: center;
 }
+
+.welcome__btn {
+    display: block;
+    text-align: center;
+    margin: 30px auto 0;
+}
