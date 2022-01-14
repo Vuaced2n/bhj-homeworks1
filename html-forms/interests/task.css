@@ -1,5 +1,11 @@
+ul {
+  list-style: none;
+}
+
 .interests {
   display: none;
+  list-style: none;
+  user-select: none;
 }
 
 .interests_main {
